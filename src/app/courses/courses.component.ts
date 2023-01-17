@@ -1,5 +1,7 @@
+import { CoursesService } from '../common/services/courses.service';
 import { Course } from '../common/models/course';
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 
 const emptyCourse: Course = {
   id: null,
@@ -15,44 +17,52 @@ const emptyCourse: Course = {
   styleUrls: ['./courses.component.scss'],
 })
 export class CoursesComponent implements OnInit {
-  // 1. Render Courses in a list
-  // 2. Select a course
-  // 3. Render a selected courses
-  courses = [
-    {
-      id: 1,
-      title: 'Angular 13 Fundamentals',
-      description: 'Learn the fundamentals of Angular 13',
-      percentComplete: 26,
-      favorite: true,
-    },
-    {
-      id: 2,
-      title: 'Angular 14 Fundamentals',
-      description: 'Learn the fundamentals of Angular 14',
-      percentComplete: 27,
-      favorite: true,
-    },
-    {
-      id: 3,
-      title: 'Angular 15 Fundamentals',
-      description: 'Learn the fundamentals of Angular 15',
-      percentComplete: 28,
-      favorite: false,
-    },
-  ];
-
+  courses = [];
+  courses$: Observable<Course[]>;
   selectedCourse = emptyCourse;
+  originalTitle = '';
 
-  constructor() {}
+  constructor(private coursesService: CoursesService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.fetchCourse();
+  }
+
+  fetchCourse() {
+    this.courses$ = this.coursesService.all();
+    // this.coursesService
+    //   .all()
+    //   .subscribe((result: Course[]) => (this.courses = result));
+  }
 
   selectCourse(course) {
     this.selectedCourse = course;
+    this.originalTitle = course.title;
+  }
+  saveCourse(course) {
+    if (course.id) {
+      this.updateCourse(course);
+    } else {
+      this.createCourse(course);
+    }
+    console.log(course);
+  }
+
+  createCourse(course) {
+    this.coursesService
+      .create(course)
+      .subscribe((results) => this.fetchCourse());
+  }
+
+  updateCourse(course) {
+    this.coursesService
+      .update(course)
+      .subscribe((results) => this.fetchCourse());
   }
   deleteCourse(courseId) {
-    console.log('Deleted Course', courseId);
+    this.coursesService
+      .delete(courseId)
+      .subscribe((result) => this.fetchCourse());
   }
 
   reset() {

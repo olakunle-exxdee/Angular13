@@ -2,9 +2,16 @@
   "courses": [
     {
       "id": 1,
-      "title": "Angular 13 Fundamentals",
-      "description": "Learn the fundamentals of Angular 13",
-      "percentComplete": 26,
+      "title": "Angular 13 ",
+      "description": "Learn the fundamentals of Angular",
+      "percentComplete": 37,
+      "favorite": true
+    },
+    {
+      "id": 2,
+      "title": "React",
+      "description": "Learn the fundamentals of React ",
+      "percentComplete": 72,
       "favorite": true
     }
   ]
